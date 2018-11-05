@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">HeartRate</string>
     <string name="title_activity_test">Test</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="call">呼叫</string>
+    <string name="email">邮箱</string>
+    <string name="phone">手机</string>
+    <string name="person_name">联系人</string>
+
 </resources>

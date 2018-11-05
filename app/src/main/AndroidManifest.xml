@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"> <!-- MainActivity -->
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.Main2Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +21,17 @@
             android:name=".activity.Test"
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme"> <!-- MainActivity -->
-           </activity>
-    </application>
+        </activity>
+        <!--     <activity
+                android:name=".activity.Main2Activity"
+                android:label="@string/title_activity_main2"
+                android:theme="@style/AppTheme.NoActionBar">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
 
-</manifest>
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+            </activity>  -->
+        </application>
+
+    </manifest>
