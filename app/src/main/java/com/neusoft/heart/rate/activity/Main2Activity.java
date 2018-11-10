@@ -1,5 +1,6 @@
 package com.neusoft.heart.rate.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,11 +21,14 @@ import com.neusoft.heart.rate.bean.PhoneContact;
 import java.util.ArrayList;
 import java.util.List;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Spinner;
 
 public class Main2Activity extends AppCompatActivity implements OnItemClickListener {
 
     List<PhoneContact> mList;
     private AutoCompleteTextView mACTV;
+    private Spinner spinner;
+    private android.widget.EditText  search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,67 @@ public class Main2Activity extends AppCompatActivity implements OnItemClickListe
         mACTV.setThreshold(1);    //设置输入一个字符 提示，默认为2
 
         mACTV.setOnItemClickListener(this);
+        search =(android.widget.EditText)findViewById(R.id.search);
+        search.setFocusable(false);//让EditText失去焦点，然后获取点击事件
+     //   search.setOnClickListener(this);
+    search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // android.widget.Toast.makeText(MainActivity.this, "do click", android.widget.Toast.LENGTH_SHORT).show();
+               Intent intent=new Intent(Main2Activity.this, SpinnerActivity.class);
+               //startActivity(intent);
+               startActivityForResult(intent, 100);
+            }
+        });
+
+
+        spinner =(Spinner) findViewById(R.id.spinner);
+        spinner.setSelection(0,true);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            //Intent intent=new Intent(Main2Activity.this, SpinnerActivity.class);
+             //   startActivity(intent);
+           String text=  spinner.getItemAtPosition(i).toString();
+
+           android.widget.Toast.makeText(Main2Activity.this,text,android.widget.Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+             //   Intent intent=new Intent(Main2Activity.this, SpinnerActivity.class);
+              //  startActivity(intent);
+            }
+        });
+
+
     }
+    @Override
+
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+switch (requestCode) {
+
+case 100:
+
+if (resultCode == RESULT_OK) {
+
+//String returnedData = data.getStringExtra("bundle");
+Bundle  b= data.getExtras();
+android.util.Log.i("变量值：",b.getString("name").toString());
+search.setHint(b.getString("EmployeeID").toString());
+ search.setText(b.getString("name").toString());
+android.widget.Toast.makeText(Main2Activity.this,search.getText() , android.widget.Toast.LENGTH_LONG).show();
+
+}
+
+break;
+
+default:
+
+}
+
+}
 /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,7 +139,7 @@ public class Main2Activity extends AppCompatActivity implements OnItemClickListe
 
         PhoneContact pc = mList.get(position);
         mACTV.setText(pc.getName() + " " + pc.getPhone());
-    
+
 
         //  ---------------------
         //      作者：Ricky_Fung

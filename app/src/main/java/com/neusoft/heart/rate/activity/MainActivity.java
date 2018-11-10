@@ -2,6 +2,7 @@ package com.neusoft.heart.rate.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initData();
         initListener();
     }
+
+
 
     private void initView() {
         ButterKnife.bind(this);

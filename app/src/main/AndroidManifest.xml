@@ -22,7 +22,8 @@
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme"> <!-- MainActivity -->
         </activity>
-        <!--     <activity
+        <!--
+                 <activity
                 android:name=".activity.Main2Activity"
                 android:label="@string/title_activity_main2"
                 android:theme="@style/AppTheme.NoActionBar">
@@ -31,7 +32,12 @@
 
                     <category android:name="android.intent.category.LAUNCHER" />
                 </intent-filter>
-            </activity>  -->
-        </application>
+            </activity>
+        -->
+        <activity
+            android:name=".activity.SpinnerActivity"
+            android:label="@string/title_activity_spinner"
+            android:theme="@style/AppTheme"></activity>
+    </application>
 
-    </manifest>
+</manifest>

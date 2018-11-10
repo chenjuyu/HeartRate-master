@@ -6,5 +6,14 @@
     <string name="email">邮箱</string>
     <string name="phone">手机</string>
     <string name="person_name">联系人</string>
+    <string name="title_activity_spinner">SpinnerActivity</string>
+    <string-array name="province1">
+        <item>河北</item>
+        <item>北京</item>
+        <item>天津</item>
+        <item>合肥</item>
+        <item>上海</item>
+        <item>甘肃</item>
+    </string-array>
 
 </resources>
