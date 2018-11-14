@@ -3,14 +3,14 @@
     package="com.neusoft.heart.rate">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <application
+<application>
+    <activity
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"> <!-- MainActivity -->
-        <activity android:name=".activity.Main2Activity">
+        android:theme="@style/AppTheme"
+        android:name=".activity.ListViewPage"> <!-- MainActivity .activity.ListViewPage -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,11 +33,19 @@
                     <category android:name="android.intent.category.LAUNCHER" />
                 </intent-filter>
             </activity>
+               android:parentActivityName=".activity.Main2Activity"
+               <activity android:name=".activity.Main2Activity"
+            />
         -->
+
+
         <activity
             android:name=".activity.SpinnerActivity"
             android:label="@string/title_activity_spinner"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <!--
+        <activity android:name=".activity.ListViewPage"></activity>
+        -->
     </application>
 
 </manifest>

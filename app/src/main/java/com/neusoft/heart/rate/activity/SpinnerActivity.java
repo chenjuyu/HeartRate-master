@@ -1,10 +1,13 @@
 package com.neusoft.heart.rate.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -15,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-public class SpinnerActivity extends AppCompatActivity {
+//AppCompatActivity
+public class SpinnerActivity extends AppCompatActivity   {
 
 
   private  ListView searchls;
@@ -26,6 +29,15 @@ public class SpinnerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spinner);
+
+         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+      //  android.app.ActionBar actionBar=  getActionBar();//Activity
+        if(actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+
 
         searchls =(ListView)findViewById(R.id.searchls);
         List<Map<String,Object>> ls=new ArrayList<Map<String,Object>>();
@@ -44,6 +56,16 @@ public class SpinnerActivity extends AppCompatActivity {
        findView();
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); // back button
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     protected void findView(){
         searchls.setOnItemClickListener(new  android.widget.AdapterView.OnItemClickListener(){
 
@@ -78,6 +100,30 @@ public class SpinnerActivity extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public void onBackPressed() {
+        android.content.Intent intent = new android.content.Intent();
+        setResult(RESULT_OK, intent);
+
+        finish();
+    }
+    android.content.Intent intent = new android.content.Intent();
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            setResult(RESULT_OK, intent);
+            finish();
+            return true;// return false 或者return true 都不会走onBackPressed了
+        }else
+        return false;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+            return super.onKeyDown(keyCode, event);// 不拦截，如果这里拦截了，也不会走到onBackPressed方法了
+        return false;
     }
 
 }

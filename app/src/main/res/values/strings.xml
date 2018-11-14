@@ -6,6 +6,7 @@
     <string name="email">邮箱</string>
     <string name="phone">手机</string>
     <string name="person_name">联系人</string>
+    <string name="hint_etUser">请输入员工名称</string>
     <string name="title_activity_spinner">SpinnerActivity</string>
     <string-array name="province1">
         <item>河北</item>
