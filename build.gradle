@@ -2,6 +2,7 @@
 
 buildscript {
     repositories {
+        mavenLocal() // 使用本地仓库
         jcenter()
        // mavenCentral()//ButterKnife依赖式注入
         maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
@@ -16,6 +17,7 @@ buildscript {
 }
 allprojects {
     repositories {
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         jcenter()
     }
 }

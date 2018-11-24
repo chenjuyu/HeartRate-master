@@ -16,6 +16,9 @@ android {
  * “ None of the methods in the added interface have been annotated with @android.webkit.JavascriptInterface; they will not be visible in API 17 ”。
  * 大概意思就是说在注解@JavascriptInterface中的方法在API 17会不可见。  所以这里设置成 16
  * 16
+ *    dexOptions {
+ preDexLibraries = false;
+ }
  */
 
 
@@ -23,6 +26,7 @@ android {
 
     buildTypes {
         release {
+            //打包时是否混淆  false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -33,13 +37,23 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //compile 'com.android.support.constraint:constraint-layout:1.1.3'
     compile 'com.android.support:design:23.4.0'
-
-
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
     compile 'com.jakewharton:butterknife:8.0.1'
     compile 'com.android.support:support-annotations:23.4.0'
+
+    compile 'commons-beanutils:commons-beanutils:1.8.0'
+    compile 'commons-collections:commons-collections:3.2.2'
+    compile 'commons-lang:commons-lang:2.5'
+    compile 'commons-logging:commons-logging:1.1.3'
+    compile 'net.sf.ezmorph:ezmorph:1.0.6'
+    compile 'net.sf.json-lib:json-lib:2.4:jdk15'
+
+    compile 'log4j:log4j:1.2.17'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'org.slf4j:slf4j-log4j12:1.7.25'
+    compile 'com.alibaba:fastjson:1.1.26'
     // compile 'com.android.support:design:25.0.0'
 }
 
@@ -55,6 +69,6 @@ configurations.all {
             }
         }
     }
-
+    exclude group: "commons-logging", module: "commons-logging"
 
 }
