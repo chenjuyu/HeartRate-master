@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -83,10 +84,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
      //   chartshowWb =(WebView) findViewById(R.id.chartshow_wb);
-       DataTask dt=  new DataTask();
-       dt.execute("同步数据");
+     //  DataTask dt=  new DataTask();
+     //  dt.execute("同步数据");
         initView();
-
         initData();
         initListener();
 
@@ -96,6 +96,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //  startService(intent);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e(MainActivity.class.getSimpleName(), "onStart()");
+    }
+
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        DataTask dt=  new DataTask();
+        dt.execute("同步数据");
+    }
 
 
     private void initView() {
@@ -118,11 +131,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //遍历出表名
             String EmployeeID = cursor.getString(0);
             String Code = cursor.getString(1);
-            String name = cursor.getString(2);
+            String name = cursor.getString(2);//cursor.getColumnIndexOrThrow("DepartmentID")
+            int did= cursor.getColumnIndex("DepartmentID"); //根据列名得到id 值 再getString(id) 输出
+             String DepartmentID=cursor.getString(did);
 
             Log.i("System.out","name的值"+name);
             Log.i("System.out", "卡号:"+Code);
             Log.i("System.out", "ID:"+EmployeeID);
+            Log.i("System.out", "部门的ID:"+DepartmentID);
         }
         cursor.close();
         //sqldb.close();
@@ -321,7 +337,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected String doInBackground(String... params) {  //三个点，代表可变参数
             //使用网络链接类HttpClient类完成对网络数据的提取，即完成对图片的下载功能
-
+            SharedPreferences userInfo = getSharedPreferences("userInfo", 0);
+           // String sessionid=userInfo.getString("userid",null);
+           String cookie= userInfo.getString("sessionid",null);
+            System.out.println("SharedPreferences的值："+cookie);
+           // CommonUtils cu=new CommonUtils();
+            CommonUtils.session_id=cookie;
             jsonstr = CommonUtils.httpRequest("http://192.168.1.25:8080/testmybatis/syndata/getpagecount.do?","POST","pagesize=100&tbl=Employee");
             System.out.println("网络返回的json:"+jsonstr);
             // String sr = jsonstr.replaceAll("\","");
@@ -355,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                            // Thread.sleep(1000);
                           //  Log.e("System.out", "showLog: " + Thread.currentThread().getName() + "写入中");
                             // jsonstr = CommonUtils.httpRequest("http://192.168.1.25:8080/testmybatis/syndata/getpagecount.do?","POST","pagesize=100&tbl=Employee");
-                            final String outstr = "currpage=" + String.valueOf(index) + "&keyid=EmployeeID&tbl=Employee&pagesize=100&field=EmployeeID,Code,Name";
+                            final String outstr = "currpage=" + String.valueOf(index) + "&keyid=EmployeeID&tbl=Employee&pagesize=100&field=EmployeeID,Code,Name,HelpCode,DepartmentID";
                             String json = CommonUtils.httpRequest("http://192.168.1.25:8080/testmybatis/syndata/syntools.do?", "POST", outstr);
                             json = StringEscapeUtils.unescapeJava(json);
                             json = json.substring(1, json.length() - 1);
@@ -375,14 +396,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 String Code = String.valueOf(m1.get("Code"));
 
 
-                                System.out.println("员工ID:" + EmployeeID);
-                                System.out.println("员工编码:" + Code);
+                              //  System.out.println("员工ID:" + EmployeeID);
+                              //  System.out.println("员工编码:" + Code);
                                 //   Log.i("System.out","员工ID:"+EmployeeID);
                                 //  Log.i("System.out","员工编码:"+Code);
                                 //   if (EmployeeID !=null || !"".equals(EmployeeID)) {
                              //   String sql = "if not exists(select EmployeeID from Employee where EmployeeID='"+EmployeeID+"')"+"\t"+
                                //         "insert into Employee(EmployeeID,Code) values('"+EmployeeID+"','"+Code+"')";
-                                String sql = "replace into Employee(EmployeeID, Code,Name) VALUES ('"+EmployeeID+"','"+Code+"','"+String.valueOf(m1.get("Name"))+"')";
+                                String sql = "replace into Employee(EmployeeID, Code,Name,HelpCode,DepartmentID) VALUES ('"+EmployeeID+"','"+Code+"','"+String.valueOf(m1.get("Name"))+"','"+String.valueOf(m1.get("HelpCode"))+"','"+String.valueOf(m1.get("DepartmentID"))+"')";
                                 sqldb.execSQL(sql);
                                 //   }
                             }

@@ -52,7 +52,10 @@ public class SpinnerActivity extends AppCompatActivity   {
         ls.add(m1);
 
         adapter=new SimpleAdapter(this,ls,R.layout.spinner_item,new String[]{"EmployeeID","name"},new int[]{R.id.EmployeeID,R.id.name});
+        adapter.getFilter().filter("a");
+        //adapter.notifyDataSetChanged();
         searchls.setAdapter(adapter);
+
        findView();
 
     }

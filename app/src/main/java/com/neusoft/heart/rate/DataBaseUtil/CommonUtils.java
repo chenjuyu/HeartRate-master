@@ -45,12 +45,33 @@ import net.sf.json.JsonConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+/*
+* 获取Cookie：
+URL url = new URL(requrl);
+ HttpURLConnection con= (HttpURLConnection) url.openConnection();
+// 取得sessionid.
+String cookieval = con.getHeaderField("set-cookie");
+String sessionid;
+if(cookieval != null) {
+sessionid = cookieval.substring(0, cookieval.indexOf(";"));
+}
+//sessionid值格式：JSESSIONID=AD5F5C9EEB16C71EC3725DBF209F6178，是键值对，不是单指值
+发送设置cookie：
+URL url = new URL(requrl);
+HttpURLConnectioncon= (HttpURLConnection) url.openConnection();
+if(sessionid != null) {
+con.setRequestProperty("cookie", sessionid);
+}
 
+* */
 
 
 public class CommonUtils {
 	private static Logger log = LoggerFactory.getLogger(CommonUtils.class);
 	  public static final String dtLong = "yyyyMMddHHmmss";
+
+	public static String session_id = null;
+
 
 	  public static JSONObject httpsRequest(String requestUrl, String requestMethod, String outputStr)
 	  {
@@ -126,7 +147,16 @@ public class CommonUtils {
 	            conn.setRequestProperty("Content-length", data.length()+"");
 	            conn.setRequestProperty("Accept-Charset", "utf-8");
 	            conn.setRequestProperty("contentType", "utf-8");
+			  if(session_id != null) {  //cookie
+				//conn.addRequestProperty("Cookie", session_id);
+				    conn.setRequestProperty("Cookie", session_id);
+			  }
+
+
 	            conn.setDoOutput(true);
+
+
+
 	            OutputStream os = conn.getOutputStream();//向服务器提交时，这句有问题，异常，待排查
 	            os.write(data.getBytes());
 	            int code = conn.getResponseCode();
@@ -134,7 +164,15 @@ public class CommonUtils {
 	            if (code == 200) {
 	                InputStream is = conn.getInputStream();
 	             String  str = URLDecoder.decode(ReadInputStream(is), "UTF-8");//从网络获取数据
-	           
+
+
+					String cookieval = conn.getHeaderField("Set-Cookie");
+					if (cookieval != null) {
+						session_id = cookieval.substring(0, cookieval.indexOf(";"));//获取sessionid
+						System.out.println ("session_id=" + session_id);
+					}
+
+
 	            //  System.out.println(str);
 	           //   com.alibaba.fastjson.JSONObject.toJSON(str);
 	            //  JSONArray  json=JSONArray.fromObject(com.alibaba.fastjson.JSONObject.toJSON(str)); 
