@@ -1,5 +1,7 @@
 package com.neusoft.heart.rate.bean;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -7,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
 import android.os.Message;
+import android.content.Context;
+import com.neusoft.heart.rate.DataBaseUtil.DBOpenHelper;
+import com.neusoft.heart.rate.activity.MainActivity;
 
 public class MyOnScrollListener implements AbsListView.OnScrollListener {
 
@@ -26,10 +31,21 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
     private OnloadDataListener listener;
 
     //数据
-    private List<Student> data;
+    //private List<Student> data;
+    private List<Employee> data;
 
-    public MyOnScrollListener(View footer) {
+   private DBOpenHelper dbOpenHelper=null;
+   private SQLiteDatabase sqldb=null;
+
+
+    public MyOnScrollListener(View footer,Context context) {
+
         this.footer = footer;
+      //  context=this;
+        dbOpenHelper=new DBOpenHelper(context,"a001.db",null,2);//1-》2 就为升级  加载数据库连接
+        sqldb=dbOpenHelper.getWritableDatabase();//通过helper的getWritableDatabase(),getReadableDatabase得到SQLiteOpenHelper所创建的数据库 cursor.getColumnIndex("name")
+
+
     }
     //设置接口回调的实例
     public void setOnLoadDataListener(OnloadDataListener listener) {
@@ -55,7 +71,7 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
                 public void run() {
                     if (listener != null) {
                         //开始加载更多数据
-                        loadMoreData();
+                        loadMoreData(null);
                         //回调设置ListView的数据
                         listener.onLoadData(data);
                         //加载完成后操作什么
@@ -79,16 +95,40 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
     /**
      * 开始加载更多新数据，这里每次只更新三条数据
      */
-    private void loadMoreData() {
+    private void loadMoreData(String conditon) {
         isLoading = true;
-        Student stu = null;
+       // Student stu = null;
+       Employee employee=null;
+        Cursor cursor=null;
+        int count=0;
         data = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+       if (conditon !=null) {
+            cursor = sqldb.rawQuery("select count(*) from Employee where Code like '%?%' or Name like '%?%' ", new String[]{conditon});
+       }else {
+            cursor = sqldb.rawQuery("select count(*) from Employee ",null);
+       }
+       while (cursor.moveToNext()){
+          count=Integer.parseInt(cursor.getString(0));
+       }
+        int pageCount=count/10;
+
+        cursor= sqldb.rawQuery("select EmployeeID,Code,Name from Employee  order by EmployeeID  limit 10 offset 10 ",null);//offset代表从第几条记录“之后“开始查询，limit表明查询多少条结果
+        while (cursor.moveToNext()){
+            employee=new Employee();
+            employee.setEmployeeID(cursor.getString(0));
+            employee.setCode(cursor.getString(1));
+            employee.setName(cursor.getString(2));
+            data.add(employee);
+        }
+
+
+
+    /*    for (int i = 0; i < 3; i++) {
             stu = new Student();
             stu.setName("新名字" + i);
             stu.setSex("新性别" + i);
             data.add(stu);
-        }
+        } */
     }
 
 
@@ -109,6 +149,6 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
     }
     //回调接口
     public interface OnloadDataListener {
-        void onLoadData(List<Student> data);
+        void onLoadData(List<Employee> data);//List<Student> data
     }
 }

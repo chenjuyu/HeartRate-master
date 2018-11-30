@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dbOpenHelper=new DBOpenHelper(MainActivity.this,"a001.db",null,2);//1-》2 就为升级
         sqldb=dbOpenHelper.getWritableDatabase();//通过helper的getWritableDatabase(),getReadableDatabase得到SQLiteOpenHelper所创建的数据库 cursor.getColumnIndex("name")
         //sqldb.execSQL("insert into Employee(EmployeeID,Code,Name,DepartmentID) values('00A','001','123','0AE')");
-        Cursor cursor = sqldb.rawQuery("select * from Employee order by EmployeeID desc limit 0,9 ", null);
+        Cursor cursor = sqldb.rawQuery("select * from Employee order by EmployeeID asc limit 0,9 ", null);
 
         while(cursor.moveToNext()){
             //遍历出表名

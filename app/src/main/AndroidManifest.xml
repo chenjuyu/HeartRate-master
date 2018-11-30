@@ -19,12 +19,12 @@
 
     <application>
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.ListViewPage"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme"> <!-- MainActivity .activity.ListViewPage LoginActivity  LoginActivity-->
+            android:theme="@style/AppTheme"> <!-- MainActivity .activity.ListViewPage LoginActivity  LoginActivity  LoginActivity-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

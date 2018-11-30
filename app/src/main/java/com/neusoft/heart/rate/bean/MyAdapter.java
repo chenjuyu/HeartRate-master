@@ -3,16 +3,16 @@ package com.neusoft.heart.rate.bean;
 import com.neusoft.heart.rate.R;
 
 import java.util.List;
+//Student
+public class MyAdapter extends MyBaseAdapter<Employee> {
 
-public class MyAdapter extends MyBaseAdapter<Student> {
-
-    public MyAdapter(List<Student> data) {
+    public MyAdapter(List<Employee> data) {
         super(data);
     }
 
-    @Override
-    public void setData(ViewHolder holder, Student t) {
-        holder.setText(R.id.mTv1, t.getName()).setText(R.id.mTv2, t.getSex());
+    @Override  //Student t
+    public void setData(ViewHolder holder, Employee t) {
+        holder.setText(R.id.mTv1,t.getCode()).setText(R.id.mTv2,t.getName() );//t.getSex()
 
     }
 
