@@ -3,10 +3,15 @@ package com.neusoft.heart.rate.activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 
+import com.alibaba.fastjson.JSON;
 import com.neusoft.heart.rate.DataBaseUtil.CommonDatabase;
 import com.neusoft.heart.rate.DataBaseUtil.DBOpenHelper;
 import com.neusoft.heart.rate.R;
@@ -16,8 +21,12 @@ import com.neusoft.heart.rate.bean.MyOnScrollListener;
 import com.neusoft.heart.rate.bean.Student;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListViewPage extends AppCompatActivity implements MyOnScrollListener.OnloadDataListener {
 
@@ -27,6 +36,9 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
     //ListView控件
     private ListView mList;
 
+    //搜索控件
+    private EditText employeeid;
+
     //自定义适配器
     MyAdapter adapter;
 
@@ -35,6 +47,8 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
 
     private DBOpenHelper dbOpenHelper=null;
     private SQLiteDatabase sqldb=null;
+
+    private  MyOnScrollListener onScrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +65,17 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
         showListView(data);
         //自定义的滚动监听事件
 
-        MyOnScrollListener onScrollListener = new MyOnScrollListener(footer,this);
+        onScrollListener = new MyOnScrollListener(footer,this);
+
+
+        //onScrollListener.onScroll();
 
         //设置接口回调
         onScrollListener.setOnLoadDataListener(this);
         //设置ListView的滚动监听事件
         mList.setOnScrollListener(onScrollListener);
+
+        init();
 
     }
 
@@ -82,6 +101,101 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
             stu.setSex(i % 2 == 0 ? "男" : "女");
             data.add(stu);
         } */
+    }
+    private  void init(){
+
+        employeeid=(EditText) findViewById(R.id.employeeid);
+        //查到ListView控件
+        mList = (ListView) findViewById(R.id.mList);
+
+        employeeid.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // 输入前的监听
+                Log.e("输入前确认执行该方法", "开始输入");
+
+            }
+     //limit 9 offset 0
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // 输入的内容变化的监听
+                if(charSequence.length()>2 && !"".equals(charSequence.toString())){
+
+                    data = new ArrayList<>();
+
+                    Employee employee=null;
+                    Cursor cursor=null;
+                    cursor= sqldb.rawQuery("select EmployeeID,Code,Name from Employee where Code like '%"+employeeid.getText().toString()+"%' or name like '%\"+employeeid.getText().toString()+\"%'  order by EmployeeID   ",null);//offset代表从第几条记录“之后“开始查询，limit表明查询多少条结果
+                    while (cursor.moveToNext()){
+                        employee=new Employee();
+                        employee.setEmployeeID(cursor.getString(0));
+                        employee.setCode(cursor.getString(1));
+                        employee.setName(cursor.getString(2));
+                        data.add(employee);
+                    }
+
+                   // showListView(data);
+
+                    adapter = new MyAdapter(data);
+                    mList.setAdapter(adapter);
+
+
+                    onScrollListener = new MyOnScrollListener(footer,ListViewPage.this);
+
+                    //设置接口回调
+                    onScrollListener.setOnLoadDataListener(ListViewPage.this);
+                    //设置ListView的滚动监听事件
+                    mList.setOnScrollListener(onScrollListener);
+
+                }
+                Log.e("输入过程中执行该方法", "文字变化");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // 输入后的监听
+                Log.e("输入结束执行该方法", "输入结束");
+            }
+        });
+
+
+        mList.setOnItemClickListener(new  android.widget.AdapterView.OnItemClickListener(){
+
+            public void onItemClick(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                //我们需要的内容，跳转页面或显示详细信息
+
+                //获得选中项的HashMap对象
+               // Map<String,String> map=(HashMap<String,String>)mList.getItemAtPosition(position);
+             // List<Employee> map= JSON.parseArray(String.valueOf(mList.getItemAtPosition(position)),Employee.class);
+               // List<Employee> map=(List<Employee>)mList.getItemAtPosition(position);
+                System.out.println(mList.getItemAtPosition(position));
+                Employee map=(Employee)mList.getItemAtPosition(position);
+                String title=map.getCode();//map.get(0).getCode();
+                String content=map.getName();//map.get(0).getName();
+                android.widget.Toast.makeText(getApplicationContext(),
+                        "你选择了第"+position+"个Item，itemTitle的值是："+title+"itemContent的值是:"+content,
+                        android.widget.Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("EmployeeID", title);
+                bundle.putString("name",content);
+                android.content.Intent intent = new android.content.Intent();
+                intent.putExtras(bundle);
+                //intent.putExtra("result", result);
+                //intent.putExtras("bundle",(bundle));
+                // intent.setClass(SpinnerActivity.this, Main2Activity.class);
+                //android.util.Log.i("message", message[arg2]);
+                //startActivity(intent);
+                //   intent.putExtra("data_return", "Hello");
+
+            //    setResult(RESULT_OK, intent);
+
+            //    finish();
+
+
+
+            }
+        });
+
     }
 
     /**

@@ -95,15 +95,17 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
     /**
      * 开始加载更多新数据，这里每次只更新三条数据
      */
-    private void loadMoreData(String conditon) {
+    public void loadMoreData(String conditon) {
         isLoading = true;
        // Student stu = null;
        Employee employee=null;
         Cursor cursor=null;
+        String str="";
         int count=0;
         data = new ArrayList<>();
        if (conditon !=null) {
             cursor = sqldb.rawQuery("select count(*) from Employee where Code like '%?%' or Name like '%?%' ", new String[]{conditon});
+           str=" where Code like '%"+conditon+"%' or Name like '%\"+conditon+\"%' ";
        }else {
             cursor = sqldb.rawQuery("select count(*) from Employee ",null);
        }
@@ -112,15 +114,21 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
        }
         int pageCount=count/10;
 
-        cursor= sqldb.rawQuery("select EmployeeID,Code,Name from Employee  order by EmployeeID  limit 10 offset 10 ",null);//offset代表从第几条记录“之后“开始查询，limit表明查询多少条结果
-        while (cursor.moveToNext()){
-            employee=new Employee();
-            employee.setEmployeeID(cursor.getString(0));
-            employee.setCode(cursor.getString(1));
-            employee.setName(cursor.getString(2));
-            data.add(employee);
-        }
 
+
+   //? *10
+    //   for(int i=2;i<=pageCount;i++) {
+        if (totalItemCount<=count) {
+            cursor = sqldb.rawQuery("select EmployeeID,Code,Name from Employee "+str+" order by EmployeeID  limit 10 offset ?  ", new String[]{String.valueOf(totalItemCount)});//offset代表从第几条记录“之后“开始查询，limit表明查询多少条结果
+            while (cursor.moveToNext()) {
+                employee = new Employee();
+                employee.setEmployeeID(cursor.getString(0));
+                employee.setCode(cursor.getString(1));
+                employee.setName(cursor.getString(2));
+                data.add(employee);
+            }
+        }
+     //  }
 
 
     /*    for (int i = 0; i < 3; i++) {

@@ -4,10 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.neusoft.heart.rate.activity.ListViewPage">
-
+    <EditText
+        android:id="@+id/employeeid"
+        android:layout_width="match_parent"
+        android:hint="请输入关键字过滤"
+        android:layout_height="50dp" />
     <ListView
         android:id="@+id/mList"
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
     </ListView>
 </RelativeLayout>

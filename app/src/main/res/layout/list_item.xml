@@ -7,13 +7,13 @@
     <TextView
         android:id="@+id/mTv1"
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:textSize="20sp" />
 
     <TextView
         android:id="@+id/mTv2"
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:textSize="20sp" />
 </RelativeLayout>
