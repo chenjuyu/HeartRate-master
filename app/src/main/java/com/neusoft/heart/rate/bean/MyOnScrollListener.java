@@ -2,6 +2,8 @@ package com.neusoft.heart.rate.bean;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -10,7 +12,12 @@ import java.util.List;
 import android.os.Handler;
 import android.os.Message;
 import android.content.Context;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.neusoft.heart.rate.DataBaseUtil.DBOpenHelper;
+import com.neusoft.heart.rate.R;
 import com.neusoft.heart.rate.activity.MainActivity;
 
 public class MyOnScrollListener implements AbsListView.OnScrollListener {
@@ -36,7 +43,11 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
 
    private DBOpenHelper dbOpenHelper=null;
    private SQLiteDatabase sqldb=null;
-
+   public String conditon=null;
+   private  int count;
+   private Cursor cursor=null;
+   private  String str="";
+   private  Context context=null;
 
     public MyOnScrollListener(View footer,Context context) {
 
@@ -63,7 +74,20 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
         //如果数据没有加载，并且滑动状态是停止的，而且到达了最后一个item项
         if (!isLoading && lastItem == totalItemCount && scrollState == SCROLL_STATE_IDLE) {
             //显示加载更多
+
+
+
+
+
+
+
             footer.setVisibility(View.VISIBLE);
+            ProgressBar progressBar=(ProgressBar)footer.findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.VISIBLE);
+
+            TextView t=(TextView)footer.findViewById(R.id.mLoad);
+            t.setText("加载中...");
+
             Handler handler = new Handler();
             //模拟一个延迟两秒的刷新功能
             handler.postDelayed(new Runnable() {
@@ -71,7 +95,7 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
                 public void run() {
                     if (listener != null) {
                         //开始加载更多数据
-                        loadMoreData(null);
+                        loadMoreData(conditon);
                         //回调设置ListView的数据
                         listener.onLoadData(data);
                         //加载完成后操作什么
@@ -90,6 +114,14 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
         isLoading = false;
         footer.setVisibility(View.GONE);
 
+        if (lastItem>=count ){
+            ProgressBar progressBar=(ProgressBar)footer.findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.GONE);
+            TextView t=(TextView)footer.findViewById(R.id.mLoad);
+            t.setText("已经加载到最后一项了");
+            Log.i("System.out","已经加载到最后一项了");
+            footer.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -99,26 +131,28 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
         isLoading = true;
        // Student stu = null;
        Employee employee=null;
-        Cursor cursor=null;
-        String str="";
-        int count=0;
+
+
         data = new ArrayList<>();
-       if (conditon !=null) {
-            cursor = sqldb.rawQuery("select count(*) from Employee where Code like '%?%' or Name like '%?%' ", new String[]{conditon});
-           str=" where Code like '%"+conditon+"%' or Name like '%\"+conditon+\"%' ";
-       }else {
-            cursor = sqldb.rawQuery("select count(*) from Employee ",null);
-       }
-       while (cursor.moveToNext()){
-          count=Integer.parseInt(cursor.getString(0));
-       }
+        if (conditon !=null) {
+            //cursor = sqldb.rawQuery("select count(1) as mycount from Employee where Code like ? or Name like ? ",new String[]{"'%"+conditon+"%'","'%"+conditon+"%'"});
+            str=" where Code like '%"+conditon+"%' or Name like '%"+conditon+"%' ";
+            cursor = sqldb.rawQuery("select count(1) as mycount from Employee "+str,null);
+        }else {
+            cursor = sqldb.rawQuery("select count(1) as mycount from Employee ",null);
+        }
+        while (cursor.moveToNext()){
+            count=Integer.parseInt(cursor.getString(0));
+            System.out.println( cursor.getString(0));
+        }
         int pageCount=count/10;
+
 
 
 
    //? *10
     //   for(int i=2;i<=pageCount;i++) {
-        if (totalItemCount<=count) {
+        if (totalItemCount<=count && count !=0) {
             cursor = sqldb.rawQuery("select EmployeeID,Code,Name from Employee "+str+" order by EmployeeID  limit 10 offset ?  ", new String[]{String.valueOf(totalItemCount)});//offset代表从第几条记录“之后“开始查询，limit表明查询多少条结果
             while (cursor.moveToNext()) {
                 employee = new Employee();
@@ -154,6 +188,8 @@ public class MyOnScrollListener implements AbsListView.OnScrollListener {
         lastItem = firstVisibleItem + visibleItemCount;
         //总listView的item个数
         this.totalItemCount = totalItemCount;
+
+
     }
     //回调接口
     public interface OnloadDataListener {

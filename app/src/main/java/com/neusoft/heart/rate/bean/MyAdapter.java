@@ -12,7 +12,7 @@ public class MyAdapter extends MyBaseAdapter<Employee> {
 
     @Override  //Student t
     public void setData(ViewHolder holder, Employee t) {
-        holder.setText(R.id.mTv1,t.getCode()).setText(R.id.mTv2,t.getName() );//t.getSex()
+        holder.setText(R.id.EmployeeID,t.getEmployeeID()).setText(R.id.mTv1,t.getCode()).setText(R.id.mTv2,t.getName() );//t.getSex()
 
     }
 
