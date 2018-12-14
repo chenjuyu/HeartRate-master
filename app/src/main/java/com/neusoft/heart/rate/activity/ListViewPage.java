@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -29,6 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import android.view.View.OnKeyListener;
+
+import butterknife.OnClick;
+
 public class ListViewPage extends AppCompatActivity implements MyOnScrollListener.OnloadDataListener {
 
     //ListView展示的数据项
@@ -87,7 +91,7 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
         data = new ArrayList<>();
         Employee employee=null;
         Cursor cursor=null;
-        cursor= sqldb.rawQuery("select EmployeeID,Code,Name from Employee  order by EmployeeID  limit 9 offset 0 ",null);//offset代表从第几条记录“之后“开始查询，limit表明查询多少条结果
+        cursor= sqldb.rawQuery("select EmployeeID,Code,Name from Employee  order by EmployeeID  limit 10 offset 0 ",null);//offset代表从第几条记录“之后“开始查询，limit表明查询多少条结果
         while (cursor.moveToNext()){
             employee=new Employee();
             employee.setEmployeeID(cursor.getString(0));
@@ -104,6 +108,7 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
         } */
     }
     private  void init() {
+
 
         employeeid = (EditText) findViewById(R.id.employeeid);
         //查到ListView控件
@@ -215,7 +220,19 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
 
 
 
+        Button sub= (Button) findViewById(R.id.button);
 
+        sub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              for(int i=0;i<mList.getCount();i++) {
+                  if(mList.getItemAtPosition(i) !=null) {
+                      Employee e=(Employee)mList.getItemAtPosition(i);
+                      System.out.println("i的值:" + i + "," + e.getName());
+                  }
+              }
+            }
+        });
 
 
 
@@ -280,6 +297,7 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
             //加入到ListView的底部
 
             mList.addFooterView(footer);
+
 
             //创建adpter数据
             adapter = new MyAdapter(data);

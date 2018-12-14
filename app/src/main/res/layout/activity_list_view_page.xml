@@ -15,4 +15,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </ListView>
+    <LinearLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/mList"
+        android:layout_gravity="right"
+        android:gravity="center_vertical|left"
+        android:orientation="horizontal">
+
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="50dp"
+       android:gravity="center_vertical|left"
+
+       android:textSize="20dp"
+       android:text="合计:"/>
+ <!-- 剩下的屏幕宽度由 android:layout_weight="1"  由这个控件占满 -->
+            <TextView
+                android:id="@+id/sum"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="left|center_vertical"
+                android:text=""
+                android:textSize="20dp" />
+
+
+
+
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:gravity="center"
+
+                android:text="保存" />
+
+
+    </LinearLayout>
+
+
 </RelativeLayout>
