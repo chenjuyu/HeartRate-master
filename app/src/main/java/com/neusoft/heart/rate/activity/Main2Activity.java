@@ -1,6 +1,9 @@
 package com.neusoft.heart.rate.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import com.neusoft.heart.rate.DataBaseUtil.CommonUtils;
 import com.neusoft.heart.rate.R;
 import com.neusoft.heart.rate.bean.PhoneAdapter;
 import com.neusoft.heart.rate.bean.PhoneContact;
@@ -21,6 +25,7 @@ import com.neusoft.heart.rate.bean.PhoneContact;
 import java.util.ArrayList;
 import java.util.List;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 public class Main2Activity extends AppCompatActivity implements OnItemClickListener {
@@ -29,6 +34,7 @@ public class Main2Activity extends AppCompatActivity implements OnItemClickListe
     private AutoCompleteTextView mACTV;
     private Spinner spinner;
     private android.widget.EditText  search;
+    private Bitmap bm = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,11 @@ public class Main2Activity extends AppCompatActivity implements OnItemClickListe
                     + i, names[i].concat("@gmail.com"));
             mList.add(pc);
         }
+
+        String image_path ="https://weixin.fxsoft88.com/WeeSee_images/goodsimg_min/2018-12-06-14-165446.jpg";
+
+        new DownTask().execute(image_path) ;
+
 
     }
 
@@ -148,6 +159,45 @@ default:
         //    版权声明：本文为博主原创文章，转载请附上博文链接！
 
     }
+
+    /*
+     * 异步任务执行网络下载图片
+     * */
+    public class DownTask extends AsyncTask<String, Void, Bitmap> {
+        //上面的方法中，第一个参数：网络图片的路径，第二个参数的包装类：进度的刻度，第三个参数：任务执行的返回结果
+        @Override
+        //在界面上显示进度条
+        protected void onPreExecute() {
+           // dialog.show() ;
+        };
+        protected Bitmap doInBackground(String... params) {  //三个点，代表可变参数
+             // HttpClient httpClient = new DefaultHttpClient() ;
+            //            HttpGet httpget = new HttpGet(params[0]) ;
+
+            try {
+
+                bm= CommonUtils.httpGet(params[0]);
+
+
+            }  catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return bm;
+        }
+        //主要是更新UI
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            //imageView.setImageBitmap(result) ;//更新UI
+            //dialog.dismiss() ;
+            ImageView imageView = (ImageView) findViewById(R.id.imageView);
+            imageView.setImageBitmap(result);
+        }
+    }
+
+
+
 }
 
 

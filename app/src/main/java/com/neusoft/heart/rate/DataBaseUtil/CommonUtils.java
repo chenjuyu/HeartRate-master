@@ -1,4 +1,7 @@
 package com.neusoft.heart.rate.DataBaseUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import com.neusoft.heart.rate.DataBaseUtil.MyX509TrustManager;
 
 import java.text.ParseException;
@@ -71,6 +74,44 @@ public class CommonUtils {
 	  public static final String dtLong = "yyyyMMddHHmmss";
 
 	public static String session_id = null;
+
+
+	//返回图片流
+
+	public static  Bitmap httpGet(String requestUrl) {
+		Bitmap result = null;
+		try {
+			URL url = new URL(requestUrl);
+			//打开连接
+			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+			if(200 == urlConnection.getResponseCode()){
+				//得到输入流
+				InputStream is =urlConnection.getInputStream();
+				/*	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				byte[] buffer = new byte[1024];
+				int len = 0;
+				while(-1 != (len = is.read(buffer))){
+					baos.write(buffer,0,len);
+					baos.flush();
+				}
+				return baos.toString("utf-8");
+				*/
+				//Bitmap bm = null;
+
+				result = BitmapFactory.decodeStream(is);
+
+
+
+			}
+		}  catch (IOException e) {
+			e.printStackTrace();
+		}
+
+      return  result;
+	}
+
+
 
 
 	  public static JSONObject httpsRequest(String requestUrl, String requestMethod, String outputStr)

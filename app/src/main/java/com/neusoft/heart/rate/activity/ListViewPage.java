@@ -225,6 +225,7 @@ public class ListViewPage extends AppCompatActivity implements MyOnScrollListene
         sub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
               for(int i=0;i<mList.getCount();i++) {
                   if(mList.getItemAtPosition(i) !=null) {
                       Employee e=(Employee)mList.getItemAtPosition(i);
